@@ -20,7 +20,14 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+
+  if (!user.pro && user.todos.length >= 10)
+    return response
+      .status(400)
+      .json({ error: "Task limit on free plan reached" });
+
+  next();
 }
 
 function checksTodoExists(request, response, next) {
