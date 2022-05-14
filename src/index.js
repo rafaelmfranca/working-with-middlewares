@@ -24,7 +24,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
 
   if (!user.pro && user.todos.length >= 10)
     return response
-      .status(400)
+      .status(403)
       .json({ error: "Task limit on free plan reached" });
 
   next();
@@ -41,7 +41,7 @@ function checksTodoExists(request, response, next) {
   if (!isValidIdentifier)
     return response.status(400).json({ error: "Invalid id" });
 
-  const todo = user.todos.some((todo) => todo.id === id);
+  const todo = user.todos.find((todo) => todo.id === id);
   if (!todo) return response.status(404).json({ error: "Task not found" });
 
   request.todo = todo;
@@ -52,8 +52,8 @@ function checksTodoExists(request, response, next) {
 function findUserById(request, response, next) {
   const { id } = request.params;
 
-  const user = user.find((user) => user.id === id);
-  if (!user) return response.json(404).json({ error: "User not found" });
+  const user = users.find((user) => user.id === id);
+  if (!user) return response.status(404).json({ error: "User not found" });
 
   request.user = user;
   next();
